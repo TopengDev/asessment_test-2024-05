@@ -10,6 +10,8 @@ RUN npm install -g npm@10.8.0
 # RUN npm i -g yarn
 RUN yarn install
 COPY . .
+RUN npx prisma generate
+RUN npx prisma migrate dev --name init
 
 # RUN addgroup -S appgroup
 # RUN adduser -g $user -h $workdir -s /bin/sh -D -G appgroup app appgroup

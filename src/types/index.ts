@@ -1,4 +1,5 @@
-export type TResponse = {
+export type TResponse<TData = any> = {
    isSuccess: boolean;
    msg: string;
+   data?: TData;
 };
