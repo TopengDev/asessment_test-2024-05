@@ -1,1 +1,3 @@
 src/app/backend/prisma/*.prisma
+*.yaml
+Dockerfile

@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:16.3-alpine3.20
+    restart: always
+    shm_size: 512mb
+    env_file:
+      - ./.db.env
+    ports:
+      - 5432:5432
+  app:
+    build: .
+    ports: 
+      - 3000:3000

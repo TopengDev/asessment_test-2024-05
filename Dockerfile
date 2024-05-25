@@ -11,16 +11,16 @@ RUN npm install -g npm@10.8.0
 RUN yarn install
 COPY . .
 
-RUN addgroup -S appgroup
-RUN adduser -g $user -h $workdir -s /bin/sh -D -G appgroup app appgroup
-RUN adduser $user wheel
-RUN apk add doas
-RUN echo /etc/doas.d/doas.conf -e "\npermit persist :wheel"
-USER app
+# RUN addgroup -S appgroup
+# RUN adduser -g $user -h $workdir -s /bin/sh -D -G appgroup app appgroup
+# RUN adduser $user wheel
+# RUN apk add doas
+# RUN echo /etc/doas.d/doas.conf -e "\npermit persist :wheel"
+# USER app
 
-ENV PORT=3002
+ENV PORT=3000
 
-EXPOSE 3002
+EXPOSE 3000
 
 CMD ["yarn", "dev"]
 
