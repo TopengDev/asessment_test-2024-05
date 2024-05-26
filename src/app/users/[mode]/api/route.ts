@@ -110,7 +110,22 @@ export function POST(req: NextRequest) {
                where: {
                   email: data.email,
                },
+               select: {
+                  email: true,
+                  fullName: true,
+               },
             });
+
+            if (!user) {
+               response = {
+                  isSuccess: false,
+                  msg: 'User not found',
+               };
+               return Response.json(response, {
+                  status: 400,
+               });
+            }
+
             response = {
                isSuccess: true,
                msg: globalConst.genericSuccessMessage,
@@ -135,19 +150,34 @@ export function POST(req: NextRequest) {
                return Response.json(response, { status: 400 });
             }
 
-            const newUser = await prisma.user.findUnique({
+            const user = await prisma.user.findUnique({
                where: {
                   email: data.email,
                   hashedPassword: data.password,
                },
+               select: {
+                  email: true,
+                  fullName: true,
+               },
             });
+
+            if (!user) {
+               response = {
+                  isSuccess: false,
+                  msg: 'Invalid credentials',
+               };
+               return Response.json(response, {
+                  status: 401,
+               });
+            }
+
             response = {
                isSuccess: true,
                msg: globalConst.genericSuccessMessage,
-               data: newUser,
+               data: user,
             };
             return Response.json(response, {
-               status: 201,
+               status: 200,
             });
          }
          if (reqMode === 'delete') {
@@ -165,15 +195,15 @@ export function POST(req: NextRequest) {
                return Response.json(response, { status: 400 });
             }
 
-            const newUser = await prisma.user.findUnique({
+            const user = await prisma.user.delete({
                where: {
                   email: data.email,
                },
             });
             response = {
                isSuccess: true,
-               msg: globalConst.genericSuccessMessage,
-               data: newUser,
+               msg: 'Account data successfully removed',
+               data: user,
             };
             return Response.json(response, {
                status: 200,

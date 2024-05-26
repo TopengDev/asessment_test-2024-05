@@ -6,10 +6,10 @@ type THorizontalSwitchProps = {
    itemList: {
       id: number;
       title: string;
+      onChoice?: (props?: any) => any;
    }[];
    activeState: number;
    setActiveState: Dispatch<SetStateAction<number>>;
-   onChoice?: (props?: any) => any;
 };
 
 export function HorizontalSwitch(_props: THorizontalSwitchProps) {
@@ -27,7 +27,10 @@ export function HorizontalSwitch(_props: THorizontalSwitchProps) {
                   _props.activeState === item.id ? 'bg-[#6FCBFF]' : 'bg-white'
                } hover:cursor-pointer hover:bg-sky-200 transition-all duration-150 w-full`}
                key={i}
-               onClick={() => _props.setActiveState(item.id)}
+               onClick={() => {
+                  _props.setActiveState(item.id);
+                  if (typeof item.onChoice === 'function') item.onChoice();
+               }}
             >
                {item.title}
             </div>

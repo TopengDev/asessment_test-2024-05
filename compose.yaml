@@ -16,7 +16,6 @@ services:
   app:
     build:
       context: .
-      # target: migration
     depends_on:
       db:
         condition: service_healthy
