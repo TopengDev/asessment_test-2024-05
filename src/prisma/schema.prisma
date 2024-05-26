@@ -18,11 +18,12 @@ model User {
 }
 
 model Todo {
-   id         Int      @id @default(autoincrement())
-   createdAt  DateTime @default(now())
-   updatedAt  DateTime @updatedAt
-   markedDone Boolean  @default(false)
-   title      String   @db.VarChar(255)
-   author     User?    @relation(fields: [authorId], references: [id])
-   authorId   Int?
+   id          Int      @id @default(autoincrement())
+   createdAt   DateTime @default(now())
+   updatedAt   DateTime @updatedAt
+   markedDone  Boolean  @default(false)
+   title       String   @db.VarChar(255)
+   desc        String   @db.VarChar(800)
+   author      User     @relation(fields: [authorEmail], references: [email])
+   authorEmail String
 }

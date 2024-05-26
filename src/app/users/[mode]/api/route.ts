@@ -1,20 +1,32 @@
-import { TRegisterUserDTO } from '@/DTO/users/index.dto';
+import {
+   TDeleteUserDTO,
+   TLoginUserDTO,
+   TProfileUserDTO,
+   TRegisterUserDTO,
+   initialLoginUserDTO,
+   initialProfileUserDTO,
+   initialRegisterUserDTO,
+} from '@/DTO/users/index.dto';
 import { globalConst } from '@/constants';
 import { prisma } from '@/prisma/prisma';
 import { TResponse } from '@/types';
 import { ApiAsyncRunner } from '@/utils/asyncRunner';
+import { validateFields } from '@/utils/fieldsValidator';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 
 export function GET(req: NextRequest) {
+   let errorMessage: string = '';
    return new ApiAsyncRunner({
       callbackProps: req,
       callback: async (req: NextRequest) => {
+         errorMessage = 'User not found';
+
          let response: TResponse;
 
          const reqMode = req.url.split('/')[req.url.split('/').length - 2];
          const reqParams = req.nextUrl.searchParams;
-         const userId = Number(reqParams.get('userId'));
+         const email = reqParams.get('email') || '';
 
          if (reqMode !== 'profile') {
             redirect('/not-found');
@@ -22,11 +34,10 @@ export function GET(req: NextRequest) {
 
          const user = await prisma.user.findFirst({
             where: {
-               id: userId,
+               email,
             },
          });
 
-         console.log({ user });
          response = {
             isSuccess: true,
             msg: '',
@@ -34,11 +45,12 @@ export function GET(req: NextRequest) {
          };
          return Response.json(response);
       },
-      errorMessage: globalConst.genericErrorMessage,
+      errorMessage,
    }).execute();
 }
 
 export function POST(req: NextRequest) {
+   let errorMessage: string = '';
    return new ApiAsyncRunner({
       callbackProps: req,
       callback: async (req: NextRequest) => {
@@ -46,10 +58,21 @@ export function POST(req: NextRequest) {
 
          const reqMode = req.url.split('/')[req.url.split('/').length - 2];
          const reqParams = req.nextUrl.searchParams;
-         const userId = Number(reqParams.get('userId'));
 
          if (reqMode === 'register') {
+            errorMessage = 'Email already exists';
+
             const data: TRegisterUserDTO = await req.json();
+
+            const validated = validateFields(initialRegisterUserDTO, data);
+
+            if (validated.length) {
+               response = {
+                  isSuccess: false,
+                  msg: `These fields are required [${validated.join(', ')}]`,
+               };
+               return Response.json(response, { status: 400 });
+            }
 
             const newUser = await prisma.user.create({
                data: {
@@ -63,9 +86,92 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: newUser,
             };
-            return Response.json(response);
+            return Response.json(response, { status: 201 });
+         }
+
+         if (reqMode === 'profile') {
+            errorMessage = 'User not found';
+
+            const data: TProfileUserDTO = await req.json();
+
+            const validated = validateFields(initialProfileUserDTO, data);
+
+            if (validated.length) {
+               response = {
+                  isSuccess: false,
+                  msg: `These fields are required [${validated.join(', ')}]`,
+               };
+               return Response.json(response, { status: 400 });
+            }
+
+            const user = await prisma.user.findUnique({
+               where: {
+                  email: data.email,
+               },
+            });
+            response = {
+               isSuccess: true,
+               msg: globalConst.genericSuccessMessage,
+               data: user,
+            };
+            return Response.json(response, { status: 200 });
+         }
+         if (reqMode === 'login') {
+            errorMessage = 'Invalid credentials';
+
+            const data: TLoginUserDTO = await req.json();
+
+            const validated = validateFields(initialProfileUserDTO, data);
+
+            if (validated.length) {
+               response = {
+                  isSuccess: false,
+                  msg: `These fields are required [${validated.join(', ')}]`,
+               };
+               return Response.json(response, { status: 400 });
+            }
+
+            const newUser = await prisma.user.findUnique({
+               where: {
+                  email: data.email,
+                  hashedPassword: data.password,
+               },
+            });
+            response = {
+               isSuccess: true,
+               msg: globalConst.genericSuccessMessage,
+               data: newUser,
+            };
+            return Response.json(response, { status: 201 });
+         }
+         if (reqMode === 'delete') {
+            errorMessage = 'User not found';
+
+            const data: TDeleteUserDTO = await req.json();
+
+            const validated = validateFields(initialProfileUserDTO, data);
+
+            if (validated.length) {
+               response = {
+                  isSuccess: false,
+                  msg: `These fields are required [${validated.join(', ')}]`,
+               };
+               return Response.json(response, { status: 400 });
+            }
+
+            const newUser = await prisma.user.findUnique({
+               where: {
+                  email: data.email,
+               },
+            });
+            response = {
+               isSuccess: true,
+               msg: globalConst.genericSuccessMessage,
+               data: newUser,
+            };
+            return Response.json(response, { status: 200 });
          }
       },
-      errorMessage: globalConst.genericErrorMessage,
+      errorMessage,
    }).execute();
 }
