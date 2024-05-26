@@ -86,7 +86,9 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: newUser,
             };
-            return Response.json(response, { status: 201 });
+            return Response.json(response, {
+               status: 201,
+            });
          }
 
          if (reqMode === 'profile') {
@@ -114,7 +116,9 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: user,
             };
-            return Response.json(response, { status: 200 });
+            return Response.json(response, {
+               status: 200,
+            });
          }
          if (reqMode === 'login') {
             errorMessage = 'Invalid credentials';
@@ -142,7 +146,9 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: newUser,
             };
-            return Response.json(response, { status: 201 });
+            return Response.json(response, {
+               status: 201,
+            });
          }
          if (reqMode === 'delete') {
             errorMessage = 'User not found';
@@ -169,7 +175,9 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: newUser,
             };
-            return Response.json(response, { status: 200 });
+            return Response.json(response, {
+               status: 200,
+            });
          }
       },
       errorMessage,
