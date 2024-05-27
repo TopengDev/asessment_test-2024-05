@@ -66,7 +66,7 @@ function TasksPage() {
 
    return (
       <section className="xy-centered-view-container">
-         <div className="xl:w-[33.3vw] xl:h-[75vh] md:w-[45vw] md:h-[60vh] h-[60vh] w-[65vw] border-black border-solid border-2 p-16 flex items-center justify-center flex-col gap-8">
+         <div className="xl:w-[33.3vw] xl:h-[75vh] md:w-[45vw] md:h-[60vh] h-[60vh] w-[65vw]  p-16 flex items-center justify-center flex-col gap-8">
             <div className="flex flex-col  w-full items-center gap-12 ">
                <div>
                   <h2 className="xl:text-4xl md:text-3xl text-2xl">
