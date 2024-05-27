@@ -1,4 +1,4 @@
-ALTER ROLE app WITH ENCRYPTED PASSWORD 'themostsecuredpasswordever' LOGIN CREATEDB;
+ALTER ROLE app WITH ENCRYPTED PASSWORD 'themostsecuredpasswordever'; LOGIN CREATEDB;
 DROP DATABASE IF EXISTS "asessment_test_2024_05";
 CREATE DATABASE "asessment_test_2024_05";
 ALTER DATABASE "asessment_test_2024_05" OWNER TO app;

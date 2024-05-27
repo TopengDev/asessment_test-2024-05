@@ -11,7 +11,6 @@ services:
       interval: 15s
       timeout: 15s
       retries: 5
-    mem_limit: 2G
     cpus: 0.25
   app:
     build:
@@ -24,6 +23,5 @@ services:
     entrypoint: ["/entrypoint.sh"]
     environment:
       - WAIT_HOSTS=db:5432
-    mem_limit: 2G
     cpus: 0.25
       
