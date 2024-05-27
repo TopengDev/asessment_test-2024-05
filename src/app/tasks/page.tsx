@@ -49,7 +49,7 @@ function TasksPage() {
    useEffect(() => {
       setUnmarkedTaskList(
          unmarkedTaskList.sort((curr, next) =>
-            orderBy !== 1
+            orderBy === 1
                ? new Date(next.createdAt).getTime() -
                  new Date(curr.createdAt).getTime()
                : new Date(curr.createdAt).getTime() -
@@ -58,7 +58,7 @@ function TasksPage() {
       );
       setMarkedTaskList(
          markedTaskList.sort((curr, next) =>
-            orderBy !== 1
+            orderBy === 1
                ? new Date(next.createdAt).getTime() -
                  new Date(curr.createdAt).getTime()
                : new Date(curr.createdAt).getTime() -

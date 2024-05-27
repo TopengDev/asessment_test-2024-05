@@ -12,8 +12,11 @@ import { prisma } from '@/prisma/prisma';
 import { TResponse } from '@/types';
 import { ApiAsyncRunner } from '@/utils/asyncRunner';
 import { validateFields } from '@/utils/fieldsValidator';
+import dynamic from 'next/dynamic';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
+import { genSalt, compare, hash } from 'bcrypt-ts';
+// const bcrypt = dynamic(() => import('bcrypt'), { ssr: false })
 
 export function GET(req: NextRequest) {
    let errorMessage: string = '';
@@ -54,6 +57,7 @@ export function POST(req: NextRequest) {
    return new ApiAsyncRunner({
       callbackProps: req,
       callback: async (req: NextRequest) => {
+         // const bcrypt = await import('bcrypt');
          let response: TResponse;
 
          const reqMode = req.url.split('/')[req.url.split('/').length - 2];
@@ -74,11 +78,14 @@ export function POST(req: NextRequest) {
                return Response.json(response, { status: 400 });
             }
 
+            const salt = await genSalt(10);
+            const newPassword = await hash(data.password, salt);
+
             const newUser = await prisma.user.create({
                data: {
                   email: data.email,
                   fullName: data.fullName,
-                  hashedPassword: data.password,
+                  hashedPassword: newPassword,
                },
             });
             response = {
@@ -153,11 +160,11 @@ export function POST(req: NextRequest) {
             const user = await prisma.user.findUnique({
                where: {
                   email: data.email,
-                  hashedPassword: data.password,
                },
                select: {
                   email: true,
                   fullName: true,
+                  hashedPassword: true,
                },
             });
 
@@ -170,6 +177,23 @@ export function POST(req: NextRequest) {
                   status: 401,
                });
             }
+
+            const passwordValid = await compare(
+               data.password,
+               user.hashedPassword,
+            );
+
+            if (!passwordValid) {
+               response = {
+                  isSuccess: false,
+                  msg: 'Invalid credentials',
+               };
+               return Response.json(response, {
+                  status: 401,
+               });
+            }
+
+            delete (user as any).hashedPassword;
 
             response = {
                isSuccess: true,
