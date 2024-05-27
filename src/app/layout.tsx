@@ -38,7 +38,7 @@ function Layout({
                      </div>
                   </div>
                   <div
-                     className="text-[36px]"
+                     className="text-[36px] hover:cursor-pointer "
                      onClick={() => {
                         setUserState({ fullName: '', email: '' });
                      }}
