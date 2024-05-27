@@ -1,15 +1,8 @@
 'use client';
 
-import { TLoginUserDTO, TRegisterUserDTO } from '@/DTO/users/index.dto';
+import { TLoginUserDTO } from '@/DTO/users/index.dto';
 import { HorizontalSwitch } from '@/components/horizontal-switch';
-import {
-   Dispatch,
-   PropsWithChildren,
-   SetStateAction,
-   useEffect,
-   useRef,
-   useState,
-} from 'react';
+import { PropsWithChildren, useState } from 'react';
 import useForm, {
    FormProvider,
    TFormMetadata,
@@ -30,7 +23,7 @@ function UsersPage(_props: {}) {
    const { formMetadata, setFormMetadata, submit, formValuesRef } = useForm();
    const guestLoginFormMetadata: TFormMetadata<TLoginUserDTO> = {
       formFields: [],
-      apiUrl: 'http://localhost:3000/users/login/api',
+      apiUrl: '',
       submitMethod: 'POST',
       customSubmitCallback: () => setUserState({ fullName: 'Guest' }),
    };
@@ -64,13 +57,7 @@ function UsersPage(_props: {}) {
                   setActiveState={setActiveMenu}
                />
                {activeMenu !== 3 && (
-                  <Form
-                     formFields={formMetadata?.formFields || []}
-                     // onSubmitCallback={(response) => {
-                     //    console.log(response?.data?.fullName);
-                     //    setUserState({ response.data.fullName });
-                     // }}
-                  />
+                  <Form formFields={formMetadata?.formFields || []} />
                )}
                <div className="w-full flex justify-center items-center">
                   <button
