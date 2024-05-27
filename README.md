@@ -1,6 +1,7 @@
 ### setup postgresql di local
 
 ```
+CREATE ROLE app;
 ALTER ROLE app WITH ENCRYPTED PASSWORD 'themostsecuredpasswordever'; LOGIN CREATEDB;
 DROP DATABASE IF EXISTS "asessment_test_2024_05";
 CREATE DATABASE "asessment_test_2024_05";
