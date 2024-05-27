@@ -32,10 +32,26 @@ function TasksPage() {
          ).json();
 
          setMarkedTaskList(
-            res.data.filter((task: TTaskItem) => task.markedDone),
+            res.data
+               .filter((task: TTaskItem) => task.markedDone)
+               .sort((curr: any, next: any) =>
+                  orderBy === 1
+                     ? new Date(next.createdAt).getTime() -
+                       new Date(curr.createdAt).getTime()
+                     : new Date(curr.createdAt).getTime() -
+                       new Date(next.createdAt).getTime(),
+               ),
          );
          setUnmarkedTaskList(
-            res.data.filter((task: TTaskItem) => !task.markedDone),
+            res.data
+               .filter((task: TTaskItem) => !task.markedDone)
+               .sort((curr: any, next: any) =>
+                  orderBy === 1
+                     ? new Date(next.createdAt).getTime() -
+                       new Date(curr.createdAt).getTime()
+                     : new Date(curr.createdAt).getTime() -
+                       new Date(next.createdAt).getTime(),
+               ),
          );
       } catch (e: any) {}
    };
@@ -44,27 +60,6 @@ function TasksPage() {
 
    useEffect(() => {
       getTaskList();
-   }, []);
-
-   useEffect(() => {
-      setUnmarkedTaskList(
-         unmarkedTaskList.sort((curr, next) =>
-            orderBy === 1
-               ? new Date(next.createdAt).getTime() -
-                 new Date(curr.createdAt).getTime()
-               : new Date(curr.createdAt).getTime() -
-                 new Date(next.createdAt).getTime(),
-         ),
-      );
-      setMarkedTaskList(
-         markedTaskList.sort((curr, next) =>
-            orderBy === 1
-               ? new Date(next.createdAt).getTime() -
-                 new Date(curr.createdAt).getTime()
-               : new Date(curr.createdAt).getTime() -
-                 new Date(next.createdAt).getTime(),
-         ),
-      );
    }, [orderBy]);
 
    const [formMode, setFormMode] = useState<'add' | 'update'>('add');
