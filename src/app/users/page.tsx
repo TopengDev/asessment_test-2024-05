@@ -50,7 +50,7 @@ function UsersPage(_props: {}) {
    const [activeMenu, setActiveMenu] = useState<number>(menus[0].id);
 
    return (
-      <section className="xy-centered-view-container">
+      <section className="xy-centered-view-container z-10 bg-white absolute top-0 left-0">
          <div className="simple-card-container">
             <div className="flex flex-col justify-center items-between gap-8 w-full">
                <HorizontalSwitch
