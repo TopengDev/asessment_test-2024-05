@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import {
    Dispatch,
    PropsWithChildren,
@@ -12,52 +12,35 @@ import {
 } from 'react';
 
 export type TGlobalProviderProps = {
-   email: string;
    fullName: string;
 };
 
 export type TGlobalContext = {
-   userState: {
-      email: string;
-      fullName: string;
-   };
-   setUserState: Dispatch<
-      SetStateAction<{
-         email: string;
-         fullName: string;
-      }>
-   >;
+   userState: TGlobalProviderProps;
+   setUserState: Dispatch<SetStateAction<TGlobalProviderProps>>;
 };
 const globalContext = createContext<TGlobalContext>({
-   userState: {
-      email: '',
-      fullName: '',
-   },
+   userState: { fullName: '' },
    setUserState: () => {},
 });
 
 export const GlobalContextProvider = (_props: PropsWithChildren) => {
    const router = useRouter();
+
    const [userState, setUserState] = useState<TGlobalProviderProps>({
-      email: '',
       fullName: '',
    });
 
    useEffect(() => {
-      if (userState) {
-         if (!userState.email || !userState.fullName) {
-            router.replace('/users');
-         } else {
-            router.replace('/tasks');
-         }
-      }
-   }, [userState, router]);
+      if (userState.fullName) router.replace('/tasks');
+      else router.replace('/users');
+   }, [userState]);
 
    return (
       <globalContext.Provider
          value={{
-            userState,
             setUserState,
+            userState,
          }}
       >
          {_props.children}

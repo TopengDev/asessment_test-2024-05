@@ -10,11 +10,11 @@ import {
    useRef,
    useState,
 } from 'react';
-import useFormContext, {
+import useForm, {
    FormProvider,
    TFormMetadata,
-   FormFieldsComponent,
-} from '@/components/FormComponent';
+   Form,
+} from '@/components/FormComponent/test';
 import useGlobalContext from '@/app/global.provider';
 import { loginFormMetadata, regisFormMetadata } from './form-metadata';
 
@@ -27,43 +27,32 @@ type TUsersMenu = {
 function UsersPage(_props: {}) {
    const { setUserState } = useGlobalContext();
 
-   const { formMetadata, formValuesRef, response, setCurrentFormMetadata } =
-      useFormContext();
+   const { formMetadata, setFormMetadata, submit, formValuesRef } = useForm();
    const guestLoginFormMetadata: TFormMetadata<TLoginUserDTO> = {
       formFields: [],
       apiUrl: 'http://localhost:3000/users/login/api',
       submitMethod: 'POST',
-      onSubmitCallback: () =>
-         setUserState({
-            email: '',
-            fullName: 'Guest',
-         }),
+      customSubmitCallback: () => setUserState({ fullName: 'Guest' }),
    };
 
    const menus: TUsersMenu[] = [
       {
          id: 1,
          title: 'Register',
-         onChoice: () => setCurrentFormMetadata(regisFormMetadata),
+         onChoice: () => setFormMetadata(regisFormMetadata),
       },
       {
          id: 2,
          title: 'Login',
-         onChoice: () => setCurrentFormMetadata(loginFormMetadata),
+         onChoice: () => setFormMetadata(loginFormMetadata),
       },
       {
          id: 3,
          title: 'Guest',
-         onChoice: () => setCurrentFormMetadata(guestLoginFormMetadata),
+         onChoice: () => setFormMetadata(guestLoginFormMetadata),
       },
    ];
    const [activeMenu, setActiveMenu] = useState<number>(menus[0].id);
-
-   useEffect(() => {
-      if (response?.isSuccess) {
-         setUserState(response.data);
-      }
-   }, [response, setUserState]);
 
    return (
       <section className="xy-centered-view-container">
@@ -75,15 +64,28 @@ function UsersPage(_props: {}) {
                   setActiveState={setActiveMenu}
                />
                {activeMenu !== 3 && (
-                  <FormFieldsComponent
-                     formFields={formMetadata.formFields}
-                     formValuesRef={formValuesRef}
+                  <Form
+                     formFields={formMetadata?.formFields || []}
+                     // onSubmitCallback={(response) => {
+                     //    console.log(response?.data?.fullName);
+                     //    setUserState({ response.data.fullName });
+                     // }}
                   />
                )}
                <div className="w-full flex justify-center items-center">
                   <button
                      className="flex items-center justify-center px-8 py-3 bg-[#48AA52] border-solid border-black border-[2px] rounded-lg text-white transition-all duration-150 hover:bg-green-500 w-40 mt-8"
-                     type="submit"
+                     onClick={() =>
+                        submit(
+                           formMetadata,
+                           formValuesRef.current,
+                           (response) => {
+                              setUserState({
+                                 fullName: response.data.fullName,
+                              });
+                           },
+                        )
+                     }
                   >
                      {activeMenu === 1 ? 'Register' : 'Login'}
                   </button>
@@ -95,17 +97,8 @@ function UsersPage(_props: {}) {
 }
 
 export default function Page(_props: PropsWithChildren) {
-   const [currentFormMetadata, setCurrentFormMetadata] = useState<
-      | TFormMetadata<TRegisterUserDTO>
-      | TFormMetadata<TLoginUserDTO>
-      | TFormMetadata<any>
-   >(regisFormMetadata);
-
    return (
-      <FormProvider
-         {...currentFormMetadata}
-         setCurrentFormMetadata={setCurrentFormMetadata}
-      >
+      <FormProvider initialFormMetadata={regisFormMetadata}>
          <UsersPage />
       </FormProvider>
    );
