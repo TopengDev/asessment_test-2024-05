@@ -108,7 +108,7 @@ function TasksPage() {
                      <div className="flex justify-between items-center gap-4">
                         <div className="flex items-center justify-between gap-4">
                            <button
-                              className="bg-[#6FCBFF] flex justify-center items-center p-4 rounded-xl hover:bg-sky-200 transition-all duration-150"
+                              className="bg-[#FFB46F] flex justify-center items-center p-4 rounded-xl hover:bg-orange-200 transition-all duration-150"
                               onClick={() => {
                                  submit(
                                     formMetadata,
@@ -130,7 +130,7 @@ function TasksPage() {
                         </div>
                         <div className="flex items-center justify-between gap-4">
                            <button
-                              className="bg-[#6FCBFF] flex justify-center items-center p-4 rounded-xl hover:bg-sky-200 transition-all duration-150"
+                              className="bg-[#FF6F6F] flex justify-center items-center p-4 rounded-xl hover:bg-red-200 transition-all duration-150"
                               onClick={() => {
                                  setFormMode('add');
                                  setFormMetadata(addTaskFormMetadata);
