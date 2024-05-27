@@ -32,7 +32,7 @@ function Layout({
                      </div>
                      <div
                         className="text-[32px] hover:cursor-pointer"
-                        onClick={() => router.replace('/tasks')}
+                        onClick={() => router.replace('/profile')}
                      >
                         Profile
                      </div>
@@ -48,7 +48,7 @@ function Layout({
                </div>
             </div>
          </nav>
-         <ModalProvider>{children}</ModalProvider>
+         {children}
       </>
    );
 }
