@@ -16,6 +16,7 @@ import dynamic from 'next/dynamic';
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
 import { genSalt, compare, hash } from 'bcrypt-ts';
+import { CustomLogger } from '@/utils/customLogger';
 // const bcrypt = dynamic(() => import('bcrypt'), { ssr: false })
 
 export function GET(req: NextRequest) {
@@ -23,6 +24,14 @@ export function GET(req: NextRequest) {
    return new ApiAsyncRunner({
       callbackProps: req,
       callback: async (req: NextRequest) => {
+         const apiLogger = new CustomLogger();
+         apiLogger.logReq({
+            req: {
+               data: await req.json(),
+               url: req.url,
+               params: req.nextUrl.searchParams,
+            },
+         });
          errorMessage = 'User not found';
 
          let response: TResponse;
@@ -46,6 +55,7 @@ export function GET(req: NextRequest) {
             msg: '',
             data: user,
          };
+         apiLogger.logRes({ res: response });
          return Response.json(response);
       },
       errorMessage,
@@ -57,6 +67,8 @@ export function POST(req: NextRequest) {
    return new ApiAsyncRunner({
       callbackProps: req,
       callback: async (req: NextRequest) => {
+         const apiLogger = new CustomLogger();
+
          // const bcrypt = await import('bcrypt');
          let response: TResponse;
 
@@ -67,6 +79,13 @@ export function POST(req: NextRequest) {
             errorMessage = 'Email already exists';
 
             const data: TRegisterUserDTO = await req.json();
+            apiLogger.logReq({
+               req: {
+                  data,
+                  url: req.url,
+                  params: req.nextUrl.searchParams,
+               },
+            });
 
             const validated = validateFields(initialRegisterUserDTO, data);
 
@@ -93,6 +112,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: newUser,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response, {
                status: 201,
             });
@@ -102,6 +122,13 @@ export function POST(req: NextRequest) {
             errorMessage = 'User not found';
 
             const data: TProfileUserDTO = await req.json();
+            apiLogger.logReq({
+               req: {
+                  data,
+                  url: req.url,
+                  params: req.nextUrl.searchParams,
+               },
+            });
 
             const validated = validateFields(initialProfileUserDTO, data);
 
@@ -138,6 +165,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: user,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response, {
                status: 200,
             });
@@ -146,6 +174,13 @@ export function POST(req: NextRequest) {
             errorMessage = 'Invalid credentials';
 
             const data: TLoginUserDTO = await req.json();
+            apiLogger.logReq({
+               req: {
+                  data,
+                  url: req.url,
+                  params: req.nextUrl.searchParams,
+               },
+            });
 
             const validated = validateFields(initialProfileUserDTO, data);
 
@@ -200,6 +235,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: user,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response, {
                status: 200,
             });
@@ -208,6 +244,13 @@ export function POST(req: NextRequest) {
             errorMessage = 'User not found';
 
             const data: TDeleteUserDTO = await req.json();
+            apiLogger.logReq({
+               req: {
+                  data,
+                  url: req.url,
+                  params: req.nextUrl.searchParams,
+               },
+            });
 
             const validated = validateFields(initialProfileUserDTO, data);
 
@@ -229,6 +272,7 @@ export function POST(req: NextRequest) {
                msg: 'Account data successfully removed',
                data: user,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response, {
                status: 200,
             });

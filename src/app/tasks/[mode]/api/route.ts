@@ -14,6 +14,7 @@ import { globalConst } from '@/constants';
 import { prisma } from '@/prisma/prisma';
 import { TResponse } from '@/types';
 import { ApiAsyncRunner } from '@/utils/asyncRunner';
+import { CustomLogger } from '@/utils/customLogger';
 import { validateFields } from '@/utils/fieldsValidator';
 import { Prisma, Todo } from '@prisma/client';
 import { NextRequest } from 'next/server';
@@ -25,12 +26,20 @@ export function POST(req: NextRequest) {
    return new ApiAsyncRunner({
       callbackProps: req,
       callback: async (req: NextRequest) => {
+         const apiLogger = new CustomLogger();
          const reqMode = req.url.split('/')[req.url.split('/').length - 2];
          const reqParams: any = req.nextUrl.searchParams;
 
          if (reqMode === 'list') {
             const reqData: TTaskListFilter = await req.json();
 
+            apiLogger.logReq({
+               req: {
+                  data: reqData,
+                  url: req.url,
+                  params: req.nextUrl.searchParams,
+               },
+            });
             const filter: any = { ...initialTaskListFilterDTO, ...reqData };
 
             const generateFilterCondition = (filter: TTaskListFilter) => {
@@ -91,13 +100,12 @@ export function POST(req: NextRequest) {
                }
             }
 
-            console.log({ tasks });
-
             response = {
                isSuccess: true,
                msg: globalConst.genericSuccessMessage,
                data: tasks,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response);
          }
 
@@ -119,7 +127,6 @@ export function POST(req: NextRequest) {
                data: { ...reqData, desc: '' },
             });
 
-            console.log({ addedTask });
             if (!addedTask) {
                response = {
                   isSuccess: false,
@@ -135,6 +142,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: addedTask,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response, {
                status: 201,
             });
@@ -178,6 +186,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: updatedTask,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response);
          }
 
@@ -216,6 +225,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: deletedTask,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response);
          }
          if (reqMode === 'mark') {
@@ -270,6 +280,7 @@ export function POST(req: NextRequest) {
                msg: globalConst.genericSuccessMessage,
                data: updatedTask,
             };
+            apiLogger.logRes({ res: response });
             return Response.json(response);
          }
       },
