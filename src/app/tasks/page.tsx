@@ -43,6 +43,10 @@ function TasksPage() {
    const [orderBy, setOrderBy] = useState<number>(1);
 
    useEffect(() => {
+      getTaskList();
+   }, []);
+
+   useEffect(() => {
       setUnmarkedTaskList(
          unmarkedTaskList.sort((curr, next) =>
             orderBy !== 1

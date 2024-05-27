@@ -17,7 +17,7 @@
    }
 
    .top-nav-container {
-      @apply w-full flex items-center justify-center border-b-black border-[2px] h-16 md:h-20 xl:h-24 bg-yellow-200 absolute top-0 left-0 z-10;
+      @apply w-full flex items-center justify-center border-b-black border-[2px] h-16 md:h-20 xl:h-24 bg-yellow-200  z-10;
    }
    .top-nav-padded-container {
       @apply w-full flex items-center justify-between h-full;

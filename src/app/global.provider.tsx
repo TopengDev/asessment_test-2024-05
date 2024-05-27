@@ -34,9 +34,8 @@ export const GlobalContextProvider = (_props: PropsWithChildren) => {
    });
 
    useEffect(() => {
-      console.log({ userState });
-      if (userState.fullName && userState.email) router.replace('/tasks');
-      else router.replace('/users');
+      if (!userState.fullName && !userState.email) router.replace('/users');
+      else router.replace('/tasks');
    }, [userState]);
 
    return (

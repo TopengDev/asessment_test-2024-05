@@ -5,6 +5,7 @@ import './globals.css';
 import { ModalProvider } from '@/components/Modal';
 import useGlobalContext, { GlobalContextProvider } from './global.provider';
 import { PropsWithChildren, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,6 +14,7 @@ function Layout({
 }: Readonly<{
    children: React.ReactNode;
 }>) {
+   const router = useRouter();
    const { userState, setUserState } = useGlobalContext();
 
    return (
@@ -22,13 +24,23 @@ function Layout({
                <div className="top-nav-padded-container">
                   <div></div>
                   <div className="flex items-center h-full gap-8">
-                     <div className="text-[32px]">Task</div>
-                     <div className="text-[32px]">Profile</div>
+                     <div
+                        className="text-[32px] hover:cursor-pointer"
+                        onClick={() => router.replace('/tasks')}
+                     >
+                        Task
+                     </div>
+                     <div
+                        className="text-[32px] hover:cursor-pointer"
+                        onClick={() => router.replace('/tasks')}
+                     >
+                        Profile
+                     </div>
                   </div>
                   <div
                      className="text-[36px]"
                      onClick={() => {
-                        setUserState({ fullName: '' });
+                        setUserState({ fullName: '', email: '' });
                      }}
                   >
                      {userState.fullName.toString()}
