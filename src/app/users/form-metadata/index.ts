@@ -1,5 +1,5 @@
 import { TLoginUserDTO, TRegisterUserDTO } from '@/DTO/users/index.dto';
-import { TFormMetadata } from '@/components/FormComponent';
+import { TFormMetadata } from '@/components/FormComponent/test';
 
 export const regisFormMetadata: TFormMetadata<TRegisterUserDTO> = {
    formFields: [
@@ -7,16 +7,19 @@ export const regisFormMetadata: TFormMetadata<TRegisterUserDTO> = {
          field: 'fullName',
          type: 'string',
          placeholder: 'your full name',
+         isHiddenField: false,
       },
       {
          field: 'email',
          type: 'email',
          placeholder: 'youremail@example.com',
+         isHiddenField: false,
       },
       {
          field: 'password',
          type: 'password',
          placeholder: 'yourescurepassword',
+         isHiddenField: false,
       },
    ],
    apiUrl: 'http://localhost:3000/users/register/api',
@@ -29,11 +32,13 @@ export const loginFormMetadata: TFormMetadata<TLoginUserDTO> = {
          field: 'email',
          type: 'email',
          placeholder: 'youremail@example.com',
+         isHiddenField: false,
       },
       {
          field: 'password',
          type: 'password',
          placeholder: 'yourescurepassword',
+         isHiddenField: false,
       },
    ],
    apiUrl: 'http://localhost:3000/users/login/api',

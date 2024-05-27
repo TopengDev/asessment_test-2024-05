@@ -1,9 +1,11 @@
 import {
    TAddTaskDTO,
+   TDeleteTaskDTO,
    TMarkTaskDTO,
    TTaskListFilter,
    TUpdateTaskDto,
    initialAddTaskDTO,
+   initialDeleteTaskDTO,
    initialMarkTaskDTO,
    initialTaskListFilterDTO,
    initialUpdateTaskDTO,
@@ -89,6 +91,8 @@ export function POST(req: NextRequest) {
                }
             }
 
+            console.log({ tasks });
+
             response = {
                isSuccess: true,
                msg: globalConst.genericSuccessMessage,
@@ -112,8 +116,19 @@ export function POST(req: NextRequest) {
             }
 
             const addedTask = await prisma.todo.create({
-               data: { ...reqData },
+               data: { ...reqData, desc: '' },
             });
+
+            console.log({ addedTask });
+            if (!addedTask) {
+               response = {
+                  isSuccess: false,
+                  msg: 'An error occured while adding task',
+               };
+               return Response.json(response, {
+                  status: 400,
+               });
+            }
 
             response = {
                isSuccess: true,
@@ -148,6 +163,16 @@ export function POST(req: NextRequest) {
                },
             });
 
+            if (!updatedTask) {
+               response = {
+                  isSuccess: false,
+                  msg: 'An error occured while updating task',
+               };
+               return Response.json(response, {
+                  status: 400,
+               });
+            }
+
             response = {
                isSuccess: true,
                msg: globalConst.genericSuccessMessage,
@@ -156,6 +181,43 @@ export function POST(req: NextRequest) {
             return Response.json(response);
          }
 
+         if (reqMode === 'delete') {
+            errorMessage = 'Failed to mark task';
+            const reqData: TDeleteTaskDTO = await req.json();
+
+            const validated = validateFields(initialDeleteTaskDTO, reqData);
+
+            if (validated.length) {
+               response = {
+                  isSuccess: false,
+                  msg: `These fields are required ${validated.join(',')}`,
+               };
+               return Response.json(response, { status: 400 });
+            }
+
+            const deletedTask = await prisma.todo.delete({
+               where: {
+                  id: reqData.id,
+               },
+            });
+
+            if (!deletedTask) {
+               response = {
+                  isSuccess: false,
+                  msg: 'An error occured while marking task',
+               };
+               return Response.json(response, {
+                  status: 400,
+               });
+            }
+
+            response = {
+               isSuccess: true,
+               msg: globalConst.genericSuccessMessage,
+               data: deletedTask,
+            };
+            return Response.json(response);
+         }
          if (reqMode === 'mark') {
             errorMessage = 'Failed to mark task';
             const reqData: TMarkTaskDTO = await req.json();
@@ -176,12 +238,32 @@ export function POST(req: NextRequest) {
                },
             });
 
+            if (!task) {
+               response = {
+                  isSuccess: false,
+                  msg: 'An error occured while marking task',
+               };
+               return Response.json(response, {
+                  status: 400,
+               });
+            }
+
             const updatedTask = await prisma.todo.update({
                data: { ...task, markedDone: !task?.markedDone },
                where: {
                   id: reqData.id,
                },
             });
+
+            if (!updatedTask) {
+               response = {
+                  isSuccess: false,
+                  msg: 'An error occured while marking task',
+               };
+               return Response.json(response, {
+                  status: 400,
+               });
+            }
 
             response = {
                isSuccess: true,

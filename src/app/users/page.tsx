@@ -20,12 +20,14 @@ type TUsersMenu = {
 function UsersPage(_props: {}) {
    const { setUserState } = useGlobalContext();
 
-   const { formMetadata, setFormMetadata, submit, formValuesRef } = useForm();
+   const { formMetadata, setFormMetadata, submit, formValues, setFormValues } =
+      useForm();
    const guestLoginFormMetadata: TFormMetadata<TLoginUserDTO> = {
       formFields: [],
       apiUrl: '',
       submitMethod: 'POST',
-      customSubmitCallback: () => setUserState({ fullName: 'Guest' }),
+      customSubmitCallback: () =>
+         setUserState({ fullName: 'Guest', email: 'guest' }),
    };
 
    const menus: TUsersMenu[] = [
@@ -57,21 +59,22 @@ function UsersPage(_props: {}) {
                   setActiveState={setActiveMenu}
                />
                {activeMenu !== 3 && (
-                  <Form formFields={formMetadata?.formFields || []} />
+                  <Form
+                     formFields={formMetadata?.formFields || []}
+                     formValues={formValues}
+                     setFormValues={setFormValues}
+                  />
                )}
                <div className="w-full flex justify-center items-center">
                   <button
                      className="flex items-center justify-center px-8 py-3 bg-[#48AA52] border-solid border-black border-[2px] rounded-lg text-white transition-all duration-150 hover:bg-green-500 w-40 mt-8"
                      onClick={() =>
-                        submit(
-                           formMetadata,
-                           formValuesRef.current,
-                           (response) => {
-                              setUserState({
-                                 fullName: response.data.fullName,
-                              });
-                           },
-                        )
+                        submit(formMetadata, formValues, (response) => {
+                           setUserState({
+                              fullName: response.data.fullName,
+                              email: response.data.email,
+                           });
+                        })
                      }
                   >
                      {activeMenu === 1 ? 'Register' : 'Login'}

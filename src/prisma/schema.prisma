@@ -23,7 +23,7 @@ model Todo {
    updatedAt   DateTime @updatedAt
    markedDone  Boolean  @default(false)
    title       String   @db.VarChar(255)
-   desc        String   @db.VarChar(800)
+   desc        String   @default("") @db.VarChar(800)
    author      User     @relation(fields: [authorEmail], references: [email])
    authorEmail String
 }

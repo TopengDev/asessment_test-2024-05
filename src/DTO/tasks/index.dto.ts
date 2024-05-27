@@ -1,11 +1,10 @@
 export type TAddTaskDTO = {
    title: string;
-   desc: string;
+   desc?: string;
    authorEmail: string;
 };
 export const initialAddTaskDTO: TAddTaskDTO = {
    title: '',
-   desc: '',
    authorEmail: '',
 };
 export type TDeleteTaskDTO = {
@@ -17,12 +16,11 @@ export const initialDeleteTaskDTO: TDeleteTaskDTO = {
 export type TUpdateTaskDto = {
    id: number;
    title: string;
-   desc: string;
+   desc?: string;
 };
 export const initialUpdateTaskDTO: TUpdateTaskDto = {
    id: NaN,
    title: '',
-   desc: '',
 };
 export type TMarkTaskDTO = {
    id: number;

@@ -13,6 +13,7 @@ import {
 
 export type TGlobalProviderProps = {
    fullName: string;
+   email: string;
 };
 
 export type TGlobalContext = {
@@ -20,7 +21,7 @@ export type TGlobalContext = {
    setUserState: Dispatch<SetStateAction<TGlobalProviderProps>>;
 };
 const globalContext = createContext<TGlobalContext>({
-   userState: { fullName: '' },
+   userState: { fullName: '', email: '' },
    setUserState: () => {},
 });
 
@@ -29,10 +30,12 @@ export const GlobalContextProvider = (_props: PropsWithChildren) => {
 
    const [userState, setUserState] = useState<TGlobalProviderProps>({
       fullName: '',
+      email: '',
    });
 
    useEffect(() => {
-      if (userState.fullName) router.replace('/tasks');
+      console.log({ userState });
+      if (userState.fullName && userState.email) router.replace('/tasks');
       else router.replace('/users');
    }, [userState]);
 
