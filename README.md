@@ -34,21 +34,14 @@ DB_URL=postgresql://app:themostsecuredpasswordever@localhost:5432/asessment_test
 
 ### steps utk run dev di local
 
-> 1. ```yarn install
->
->    ```
-> 2. ```npx prisma generate
->
->    ```
-> 3. ```npx prisma migrate dev
->
->    ```
-> 4. ```yarn dev
->
->    ```
+> 1. `yarn install`
 
-### steps utk run dev di local
+> 2. `npx prisma generate`
 
-> 1. ```docker compose up
->
->    ```
+> 3. `npx prisma migrate dev`
+
+> 4. `yarn dev`
+
+### steps utk run dev docker di local
+
+> 1. `docker compose up`
