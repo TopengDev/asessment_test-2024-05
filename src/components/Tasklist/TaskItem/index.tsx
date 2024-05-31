@@ -19,7 +19,7 @@ export function TaskItem(
    const mark = async () => {
       try {
          const res: any = await (
-            await fetch('http://localhost:3000/tasks/mark/api', {
+            await fetch('http://localhost:3002/tasks/mark/api', {
                method: 'POST',
                body: JSON.stringify(_props),
                headers: {
@@ -33,7 +33,7 @@ export function TaskItem(
    const deletee = async () => {
       try {
          const res: any = await (
-            await fetch('http://localhost:3000/tasks/delete/api', {
+            await fetch('http://localhost:3002/tasks/delete/api', {
                method: 'POST',
                body: JSON.stringify(_props),
                headers: {
@@ -50,7 +50,9 @@ export function TaskItem(
          <div className="w-full justify-between flex h-full">
             <div className="h-full flex flex-col gap-2">
                <div className="xl:text-xl md:text-base text-sm font-semibold flex gap-4 items-center">
-                  <p>{_props.title}</p>
+                  <p className="max-w-32 text-wrap overflow-x-scroll">
+                     {_props.title}
+                  </p>
                   <div
                      className="h-full flex items-center justify-center hover:cursor-pointer"
                      onClick={() => _props.setFormMode('update')}
@@ -72,12 +74,12 @@ export function TaskItem(
                   <p>{new Date(_props.createdAt).toDateString()}</p>
                </div>
             </div>
-            <div className="h-full flex items-center justify-between  gap-4">
-               <div className="h-full hover:cursor-pointer" onClick={deletee}>
+            <div className="flex items-start justify-between  gap-4 ">
+               <div className=" hover:cursor-pointer" onClick={deletee}>
                   <LucideTrash className="h-10 w-8 " />
                </div>
                <div
-                  className="h-full flex items-center hover:cursor-pointer"
+                  className="flex items-center hover:cursor-pointer"
                   onClick={mark}
                >
                   {_props.markedDone ? (
